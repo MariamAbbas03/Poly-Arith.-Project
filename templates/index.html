@@ -1,0 +1,71 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Polynomial Arithmetic</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+
+</head>
+<body background="pa/b.jpg">
+
+    
+    <form action="/calculate" method="post" id="calculationForm">
+
+        <h1>Encryption With Polynomial Arithmetics</h1>
+
+        <label for="deg">Enter degree of m:</label>
+        <input type="number" name="deg" id="deg" required>
+
+        
+        <label for="operation">Select operation:</label>
+        <select name="operation" id="operation" required>
+            <option value="modred">Modulo Reduction</option>
+            <option value="add">Addition</option>
+            <option value="subtract">Subtraction</option>
+            <option value="multiply">Multiplication</option>
+            <option value="divide">Division</option>
+            <option value="inverse">Find the Inverse</option>
+        </select>
+
+        <label for="input_type">Select the type of your input:</label>
+        <select name="input_type" id="input_type" required>
+            <option value="binary">Binary</option>
+            <option value="hexadecimal">Hexadecimal</option>    
+        </select>
+
+
+        <br>
+
+        <label for="input_data">Enter your message:</label>
+        <input type="text" name="input_data" id="input_data" required>
+
+        <br>
+
+        <label for="key">Enter your key:</label>
+        <input type="text" name="key" id="key" required>
+
+        <br>
+
+        <button type="submit">Calculate</button>
+
+        <br>
+
+        {% if poly is defined %}
+        <p id="poly">The generated polynomial is: </p>
+        <p>{{ poly }}</p>
+        {% endif %}
+
+        {% if result is defined %}
+        <p id="result">Result: {{ result }}</p>
+        {% endif %}
+
+    </form>
+</body>
+</html>
+</html>
