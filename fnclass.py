@@ -16,10 +16,10 @@ class PolynomialArithmetic:
     def generate_x_polynomial(self):
         x = ''
         m = self.m
-        for i in range(len(m)-1,-1):
+        for i in range(len(m)-1,-1,-1):
             if i!= 0:
                 if m[i]=='1':
-                    x = x + 'x^(' + str(i) + ')' + '+'
+                    x = x + 'x^(' + str(i) + ')' + ' + '
             else:
                 if m[i]=='1':
                     x = x + 'x^(' + str(i) + ')'
