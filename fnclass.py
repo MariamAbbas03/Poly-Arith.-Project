@@ -16,8 +16,8 @@ class PolynomialArithmetic:
     def generate_x_polynomial(self):
         x = ''
         m = self.m
-        for i in range(len(m)):
-            if i!= len(m)-1:
+        for i in range(len(m)-1,-1):
+            if i!= 0:
                 if m[i]=='1':
                     x = x + 'x^(' + str(i) + ')' + '+'
             else:
@@ -88,18 +88,17 @@ class PolynomialArithmetic:
         return answer
 
     def divide(self, a, b):
-        if b == '0':
-            raise ValueError("Division by zero")
-    
+        # Convert binary strings to integers
         a = int(a, 2)
         b = int(b, 2)
     
-        quotient = 0
-        while a >= b:
-            shift = len(bin(a)) - len(bin(b))
-            a ^= (b << shift)
-            quotient |= (1 << shift)
+        # Perform binary division
+        quotient = a // b
+        remainder = a % b
     
-        quotient_str = bin(quotient)[2:].zfill(self.deg + 1)
-        return quotient_str
+        # Convert the results back to binary strings
+        quotient_binary = bin(quotient)[2:]
+        remainder_binary = bin(remainder)[2:]
+    
+        return quotient_binary
         
