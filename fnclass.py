@@ -138,5 +138,9 @@ class PolynomialArithmetic:
         operation = Operation(operation_type=operation_type, input_data=input_data, key=key, result=result)
         db.session.add(operation)
         db.session.commit()
+
+    def clear_history(self):
+        Operation.query.delete()
+        db.session.commit()
     
 

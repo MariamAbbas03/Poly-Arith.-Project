@@ -13,13 +13,15 @@
         <a href="{{ url_for('index') }}">Back to Calculator</a>
     </div>
     
-    <form>
+    <form action="/clear_history" method="post" id="clearHistoryForm">
     <h1>Operation History</h1>
     <ul>
         {% for operation in operations %}
             <li>{{ operation.timestamp }} - {{ operation.operation_type }}: {{ operation.input_data }} {{ operation.key }} = {{ operation.result }}</li>
         {% endfor %}
     </ul>
+
+    <button type="submit">Clear History</button>
 </form>
 </body>
 </html>

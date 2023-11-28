@@ -88,5 +88,11 @@ def perform_operation(operation_id):
 
     return redirect(url_for('history'))
 
+@app.route('/clear_history', methods=['POST'])
+def clear_history():
+    pa = PolynomialArithmetic(0)
+    pa.clear_history()
+    return redirect(url_for('history'))
+
 if __name__ == '__main__':
     app.run(debug=True)
