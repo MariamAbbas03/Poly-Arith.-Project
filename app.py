@@ -48,7 +48,7 @@ def calculate():
         elif operation == 'modred':
             result = pa.modulo_reduction(input_data)
         elif operation == 'inverse':
-            result = pa.find_inverse(input_data)
+            result = pa.inverse(input_data)
 
         if input_type=='hexadecimal':
             result = hex(int(result, 2))[2:].zfill(int(pa.deg/4))
@@ -82,7 +82,7 @@ def perform_operation(operation_id):
     elif operation.operation_type == 'modred':
         result = pa.modulo_reduction(operation.input_data)
     elif operation.operation_type == 'inverse':
-        result = pa.find_inverse(operation.input_data)
+        result = pa.inverse(operation.input_data)
 
     pa.record_operation(operation.operation_type, operation.input_data, operation.key, result)
 
