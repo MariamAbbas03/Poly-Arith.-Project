@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <form>
+    <h1>Operation History</h1>
+    <ul>
+        {% for operation in operations %}
+            <li>{{ operation.timestamp }} - {{ operation.operation_type }}: {{ operation.input_data }} {{ operation.key }} = {{ operation.result }}</li>
+        {% endfor %}
+    </ul>
+</form>
+</body>
+</html>

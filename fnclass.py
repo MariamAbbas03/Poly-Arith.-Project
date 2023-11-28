@@ -5,6 +5,21 @@ Created on Tue Nov 28 00:14:47 2023
 @author: USER
 """
 
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from flask import Flask
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
+db = SQLAlchemy(app)
+
+class Operation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    operation_type = db.Column(db.String(20), nullable=False)
+    input_data = db.Column(db.String(255), nullable=False)
+    key = db.Column(db.String(255), nullable=False)
+    result = db.Column(db.String(255), nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 class PolynomialArithmetic:
     
@@ -119,7 +134,9 @@ class PolynomialArithmetic:
     
         return quotient_str
     
-
-# Create an instance of PolynomialArithmetic with a specified degree
-poly_arithmetic = PolynomialArithmetic(deg=8)  # You can choose the degree you want
+    def record_operation(self, operation_type, input_data, key, result):
+        operation = Operation(operation_type=operation_type, input_data=input_data, key=key, result=result)
+        db.session.add(operation)
+        db.session.commit()
+    
 

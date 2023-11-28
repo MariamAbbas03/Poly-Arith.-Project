@@ -1,7 +1,15 @@
-from flask import Flask, render_template, request
-from fnclass import PolynomialArithmetic   
+from flask import Flask, render_template, request, redirect, url_for
+from fnclass import *   
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # SQLite database file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -45,9 +53,40 @@ def calculate():
         if input_type=='hexadecimal':
             result = hex(int(result, 2))[2:].zfill(int(pa.deg/4))
 
+        pa.record_operation(operation, input_data, key, result)
+
         return render_template('index.html', result=result, poly=poly)
     except Exception as e:
         return render_template('index.html', result=str(e))
+    
+@app.route('/history')
+def history():
+    operations = Operation.query.all()
+    return render_template('history.html', operations=operations)
+
+@app.route('/perform_operation/<int:operation_id>')
+def perform_operation(operation_id):
+    operation = Operation.query.get_or_404(operation_id)
+
+    pa = PolynomialArithmetic(len(operation.input_data) - 1)
+    result = None
+
+    if operation.operation_type == 'add':
+        result = pa.add(operation.input_data, operation.key)
+    elif operation.operation_type == 'subtract':
+        result = pa.subtract(operation.input_data, operation.key)
+    elif operation.operation_type == 'multiply':
+        result = pa.multiply(operation.input_data, operation.key)
+    elif operation.operation_type == 'divide':
+        result = pa.divide(operation.input_data, operation.key)
+    elif operation.operation_type == 'modred':
+        result = pa.modulo_reduction(operation.input_data)
+    elif operation.operation_type == 'inverse':
+        result = pa.find_inverse(operation.input_data)
+
+    pa.record_operation(operation.operation_type, operation.input_data, operation.key, result)
+
+    return redirect(url_for('history'))
 
 if __name__ == '__main__':
     app.run(debug=True)
