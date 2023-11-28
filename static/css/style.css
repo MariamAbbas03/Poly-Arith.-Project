@@ -68,3 +68,22 @@ button:hover {
     color: #333;
 }
 
+.history-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.history-button a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #0b3242;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.history-button a:hover {
+    background-color: rgb(18, 133, 135);
+}
