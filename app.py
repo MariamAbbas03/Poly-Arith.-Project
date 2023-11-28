@@ -17,7 +17,7 @@ def calculate():
         key = request.form['key']
 
         if operation not in ['add', 'subtract', 'multiply', 'divide', 'modred', 'inverse']:
-            return render_template('index.html', result="Invalid operation")
+            return render_template('index.html', result="Invalid operation.")
 
         pa = PolynomialArithmetic(int(deg)) # Set the appropriate degree
         poly = pa.generate_x_polynomial()
