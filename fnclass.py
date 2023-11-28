@@ -1,62 +1,63 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 28 00:14:47 2023
+
+@author: USER
+"""
+
+
 class PolynomialArithmetic:
     
     def __init__(self, deg):
         self.deg = deg
-        self.m = self.generate_primitive_polynomial()
+        self.m = self.generate_irreducible_polynomial()
     
-    def generate_primitive_polynomial(self):
+    def generate_irreducible_polynomial(self):
         m = ""
-        for i in range(0, 164):
-            if i == 0 or i == 6 or i == 7 or i == 163:
+        for i in range(0, 9):
+            if i == 0 or i==1 or i == 3 or i == 4 or i == 8:
                 m += '1'
             else:
                 m += '0'
-        return m
-
+        return m[::-1]
+    
     def generate_x_polynomial(self):
         x = ''
         m = self.m
-        for i in range(len(m)):
-            if i!= len(m)-1:
+        plus = False
+        for i in range(len(m)-1,-1,-1):
+            if i!= 0:
                 if m[i]=='1':
-                    x = x + 'x^(' + str(i) + ')' + '+'
+                    if plus==False:
+                        x = x + 'x^(' + str(i) + ')' 
+                        plus=True
+                    else:
+                        x = x + ' + ' + 'x^(' + str(i) + ')'
             else:
                 if m[i]=='1':
-                    x = x + 'x^(' + str(i) + ')'
+                    x = x + ' + 1'
         return x
     
-    def mod2(self, s):
-        for i in range(0, len(s) - 1):
-            if int(s[i]) % 2 == 0:
-                s[i] = '0'
-            else:
-                s[i] = '1'
-                
     def modulo_reduction(self, s):
-        l = len(s)
-        i = l - 1
-        while i > self.deg - 1:
-            if s[i] == '1':
-                intm = int(self.m, 2)
-                intm = intm << (i - self.deg)
-                ints = int(s, 2)
-                ints = ints ^ intm
-                s = bin(ints)
-                s = s[2:]
-                s.zfill(l)
-            i -= 1
-        return s
-    
+        s = int(s, 2)
+        m = self.generate_irreducible_polynomial()       
+        m = int(m,2)
+        remainder = s % m
+        remainder_binary = bin(remainder)[2:]
+        return remainder_binary
+
     def inverse(self, b):
-        (a1, a2, a3) = (1, 0, self.deg)
-        (b1, b2, b3) = (0, 1, b)
-        while b3 != 1:
-            if b3 == 0:
+
+        m = self.generate_irreducible_polynomial()       
+        (a1, a2, a3) = ('1', '0', m)
+        (b1, b2, b3) = ('0', '1', b)
+        while b3 != '1':
+            if b3 == '0':
                 return "no inverse"
             q = self.divide(a3, b3)
-            t1 = self.subtract(a1, self.multiply(q, b1), self.deg)
-            t2 = self.subtract(a2, self.multiply(q, b2), self.deg)
-            t3 = self.subtract(a3, self.multiply(q, b3), self.deg)
+            t1 = self.subtract(a1, self.multiply(q, b1))
+            t2 = self.subtract(a2, self.multiply(q, b2))
+            t3 = self.subtract(a3, self.multiply(q, b3))
             (a1, a2, a3) = (b1, b2, b3)
             (b1, b2, b3) = (t1, t2, t3)
         return b2  
@@ -79,27 +80,46 @@ class PolynomialArithmetic:
         result.zfill(self.deg + 1)
         return result
     
-    def multiply(self, a, b):
-        a = str(a)
-        b = str(b)
-        mul = int(a, 2) * int(b, 2)
-        answer = bin(mul)
-        answer = self.modulo_reduction(answer, self.deg)
-        return answer
-
-    def divide(self, a, b):
-        if b == '0':
-            raise ValueError("Division by zero")
+    def multiply(self, multiplicand, multiplier):
+        
+        multiplicand = int(multiplicand, 2)
+        multiplier = int(multiplier, 2)
+        partial_products = []
     
-        a = int(a, 2)
-        b = int(b, 2)
+        multiplier_str = bin(multiplier)[2:]
+    
+        for i in range(len(multiplier_str) - 1, -1, -1):
+            digit_multiplier = int(multiplier_str[i])
+            partial_product = multiplicand * digit_multiplier
+    
+            partial_product <<= (len(multiplier_str) - 1 - i)
+            partial_products.append(bin(partial_product)[2:])
+        
+        result = '0'
+        for x in partial_products:
+            result = self.add(result, x)
+    
+        return result
+
+    def divide(self, dividend, divisor):
+    
+        dividend_int = int(dividend, 2)
+        divisor_int = int(divisor, 2)
     
         quotient = 0
-        while a >= b:
-            shift = len(bin(a)) - len(bin(b))
-            a ^= (b << shift)
-            quotient |= (1 << shift)
+        remainder = dividend_int
     
-        quotient_str = bin(quotient)[2:].zfill(self.deg + 1)
+        while divisor_int <= remainder:
+            shift = remainder.bit_length() - divisor_int.bit_length()
+    
+            quotient |= 1 << shift
+            remainder ^= divisor_int << shift
+    
+        quotient_str = bin(quotient)[2:]
+    
         return quotient_str
-        
+    
+
+# Create an instance of PolynomialArithmetic with a specified degree
+poly_arithmetic = PolynomialArithmetic(deg=8)  # You can choose the degree you want
+
