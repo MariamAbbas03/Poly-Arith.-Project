@@ -1,6 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background-image: url('b.jpg'); 
+    background-image: url('b2.jpg'); 
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -77,7 +77,7 @@ button:hover {
 .history-button a {
     display: inline-block;
     padding: 10px 15px;
-    background-color: #0c688d;
+    background-color: #49acd3;
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -85,5 +85,33 @@ button:hover {
 }
 
 .history-button a:hover {
-    background-color: rgb(18, 133, 135);
+    background-color: rgb(136, 240, 242);
+}
+
+.crypto-game-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    text-align: right;
+    background-color: #0c688d;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.crypto-game-link p {
+    margin: 0;
+    color: #fff;
+    font-size: 14px;
+}
+
+.crypto-game-link a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.crypto-game-link a:hover {
+    text-decoration: underline;
 }

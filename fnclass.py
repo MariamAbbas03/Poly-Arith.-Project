@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 28 00:14:47 2023
-
-@author: USER
-"""
-
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask import Flask
@@ -28,13 +21,81 @@ class PolynomialArithmetic:
         self.m = self.generate_irreducible_polynomial()
     
     def generate_irreducible_polynomial(self):
-        m = ""
-        for i in range(0, 9):
-            if i == 0 or i==1 or i == 3 or i == 4 or i == 8:
-                m += '1'
-            else:
-                m += '0'
-        return m[::-1]
+        deg = self.deg
+        
+        s=""
+        if deg==113:
+            for i in range(0,114):
+                if i==113 or i==15 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==131:
+            for i in range(0,132):
+                if i==131 or i==99 or i==97 or i==95 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==163:
+            for i in range(0,164):
+                if i==163 or i==99 or i==97 or i==3 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==193:
+            for i in range(0,194):
+                if i==193 or i==73 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==233:
+            for i in range(0,234):
+                if i==233 or i==159 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==239:
+            for i in range(0,240):
+                if i==239 or i==203 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==283:
+            for i in range(0,284):
+                if i==283 or i==249 or i==219 or i==27 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==409:
+            for i in range(0,410):
+                if i==409 or i==87 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+        
+        if deg==571:
+            for i in range(0,572):
+                if i==571 or i==507 or i==475 or i==417 or i==0:
+                    s+='1'
+                else:
+                    s+='0'
+            return s
+    
     
     def generate_x_polynomial(self):
         x = ''
@@ -54,19 +115,23 @@ class PolynomialArithmetic:
         return x
     
     def modulo_reduction(self, s):
-        s = int(s, 2)
-        m = self.generate_irreducible_polynomial()       
+        s=bin(int(s,2))[2:]
+        m = self.generate_irreducible_polynomial()
+        m_l = len(m)-1
         m = int(m,2)
-        remainder = s % m
-        remainder_binary = bin(remainder)[2:]
-        return remainder_binary
-
+        while len(s)-1>m_l:
+            l=len(s)-1
+            s = int(s,2)
+            s ^= (m << (l-m_l))
+            s = bin(s)[2:]
+            s = s.zfill(m_l)
+        return s
+    
     def inverse(self, b):
-
         m = self.generate_irreducible_polynomial()       
         (a1, a2, a3) = ('1', '0', m)
         (b1, b2, b3) = ('0', '1', b)
-        while b3 != '1':
+        while int(b3,2) != 1:
             if b3 == '0':
                 return "no inverse"
             q = self.divide(a3, b3)
@@ -83,7 +148,7 @@ class PolynomialArithmetic:
         intresult = inta ^ intb
         result = bin(intresult)
         result = result[2:]
-        result.zfill(self.deg + 1)
+        result = result.zfill(self.deg)
         return result
     
     def subtract(self, a, b):
@@ -92,30 +157,19 @@ class PolynomialArithmetic:
         intresult = inta ^ intb
         result = bin(intresult)
         result = result[2:]
-        result.zfill(self.deg + 1)
+        result = result.zfill(self.deg)
         return result
     
     def multiply(self, multiplicand, multiplier):
-        
-        multiplicand = int(multiplicand, 2)
-        multiplier = int(multiplier, 2)
-        partial_products = []
-    
-        multiplier_str = bin(multiplier)[2:]
-    
-        for i in range(len(multiplier_str) - 1, -1, -1):
-            digit_multiplier = int(multiplier_str[i])
-            partial_product = multiplicand * digit_multiplier
-    
-            partial_product <<= (len(multiplier_str) - 1 - i)
-            partial_products.append(bin(partial_product)[2:])
-        
-        result = '0'
-        for x in partial_products:
-            result = self.add(result, x)
-    
+        result= '0' * (len(multiplicand)+len(multiplier)-1)
+        for i in range(len(multiplier)-1,-1, -1):
+            if multiplier[i]=='1':
+                result = int(result,2)
+                result ^= (int(multiplicand,2)<<(len(multiplier)-1-i))
+                result = bin(result)[2:]
+                result = self.modulo_reduction(result)
         return result
-
+ 
     def divide(self, dividend, divisor):
     
         dividend_int = int(dividend, 2)
@@ -142,5 +196,3 @@ class PolynomialArithmetic:
     def clear_history(self):
         Operation.query.delete()
         db.session.commit()
-    
-
