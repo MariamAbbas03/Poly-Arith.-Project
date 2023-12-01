@@ -50,13 +50,22 @@ def calculate():
         elif operation == 'inverse':
             result = pa.inverse(input_data)
 
-        if input_type=='hexadecimal':
-            result = hex(int(result, 2))[2:].zfill(int(pa.deg/4))
+        print(f"Debug: Result before handling: {result}")
+
+        if result is not None:
+            if input_type == 'hexadecimal':
+                result = hex(int(result, 2))[2:].zfill(int(pa.deg/4))
+            print(f"Debug: Result after conversion: {result}")
+
+        else:
+            result = "Error: Calculation result is None."
+            print("Debug: Result is None.")
 
         pa.record_operation(operation, input_data, key, result)
 
         return render_template('index.html', result=result, poly=poly)
     except Exception as e:
+        print(f"Debug: Exception - {str(e)}")
         return render_template('index.html', result=str(e))
     
 @app.route('/history')

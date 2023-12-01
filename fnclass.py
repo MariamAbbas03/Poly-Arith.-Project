@@ -24,21 +24,18 @@ class PolynomialArithmetic:
     
     def __init__(self, deg):
         try:
+            self.deg = deg # Degree of the polynomial
             if not isinstance(deg, int) or deg < 1:
                 raise ValueError("Degree must be a positive integer.")
-            self.deg = deg # Degree of the polynomial
             self.m = self.generate_irreducible_polynomial() # Generate the irreducible polynomial
         except ValueError as ve:
             print(f"Initialization error: {ve}")
-            self.deg = None
-            self.m = None  
         except Exception as e:
             print(f"Unexpected error during initialization: {e}")
-            self.deg = None
-            self.m = None
     
-    def generate_irreducible_polynomial(self, deg):
+    def generate_irreducible_polynomial(self):
       try:
+        deg = self.deg
         supported_degrees = [113, 131, 163, 193, 233, 239, 283, 409, 571]
         if self.deg not in supported_degrees:
             raise ValueError(f"Unsupported polynomial degree: {self.deg}")
@@ -117,18 +114,19 @@ class PolynomialArithmetic:
             return s[::-1]
         return "Please enter another common power"
       except ValueError as ve:
-        print(f"Error in addition: {ve}")
-        return None
+        return f"Unsupported polynomial degree: {self.deg}"
       except Exception as e:
-            print(f"Unexpected error in generate_irreducible_polynomial: {e}")
-            return None
+            return f"Unexpected error in generate_irreducible_polynomial: Please try another input."
 
     
     
     def generate_x_polynomial(self):
       try:
+
         x = '' # Initialize an empty string to represent the x polynomial
         m = self.m # Retrieve the irreducible polynomial
+        if m[0]!='1' and m[0]!='0':
+            return m
         plus = False # Flag to track whether a 'plus' symbol should be added
         for i in range(len(m)-1,-1,-1): # Iterate over the irreducible polynomial bits in reverse order
             if i!= 0:
@@ -143,8 +141,7 @@ class PolynomialArithmetic:
                     x = x + ' + 1' # Add a constant term if the last bit is 1
         return x  # Return the generated x polynomial as a string
       except Exception as e:
-            print(f"Error in generating x polynomial: {e}")
-            return None
+            return f"Error in generating polynomial: Please try another input."
     
     def modulo_reduction(self, s):
       try:
@@ -160,8 +157,7 @@ class PolynomialArithmetic:
             s = s.zfill(m_l) # Fill with zeros to match the irreducible polynomial degree -1
         return s # Return the result after modulo reduction
       except Exception as e:
-            print(f"Error in modulo reduction: {e}")
-            return None
+            return f"Error in modulo reduction: Please try another input."
     
     def inverse(self, b):
       try:
@@ -179,14 +175,11 @@ class PolynomialArithmetic:
             (b1, b2, b3) = (t1, t2, t3)
         return b2  # Return the multiplicative inverse
       except Exception as e:
-            print(f"Error in finding inverse: {e}")
-            return None
+            return f"Error in finding inverse: Please try another input."
     
     def add(self, a, b):
       try:
         # Check if inputs are strings
-        if not isinstance(a, str) or not isinstance(b, str):
-            raise ValueError("Inputs must be binary strings.")
         # Convert binary strings to integers
         inta = int(a, 2)
         intb = int(b, 2)
@@ -196,11 +189,10 @@ class PolynomialArithmetic:
         result = result.zfill(self.deg) # Fill with leading zeros to match the polynomial degree
         return result # Return the result of addition
       except ValueError as ve:
-        print(f"Error in addition: {ve}")
-        return None
+        return f"Error in addition: Please try another input."
+        
       except Exception as e:
-            print(f"Error in addition: {e}")
-            return None
+            return f"Error in addition: {e}"
     
     def subtract(self, a, b):
       try:
@@ -216,11 +208,9 @@ class PolynomialArithmetic:
         result = result.zfill(self.deg) # Fill with leading zeros to match the polynomial degree
         return result # Return the result of addition
       except ValueError as ve:
-        print(f"Error in subtraction: {ve}")
-        return None
+        return f"Error in subtraction: Please try another input."
       except Exception as e:
-            print(f"Error in subtraction: {e}")
-            return None
+            return f"Error in subtraction: {e}"
     
     def multiply(self, multiplicand, multiplier):
       try:
@@ -238,11 +228,9 @@ class PolynomialArithmetic:
                 result = self.modulo_reduction(result)
         return result # Return the result of multiplication
       except ValueError as ve:
-            print(f"Error in multiplication: {ve}")
-            return None
+            return f"Error in multiplication: Please try another input."
       except Exception as e:
-            print(f"Unexpected error in multiplication: {e}")
-            return None
+            return f"Unexpected error in multiplication: {e}"
 
 
     def divide(self, dividend, divisor): 
@@ -272,11 +260,9 @@ class PolynomialArithmetic:
             return quotient_str # Return the result of division
     
         except ValueError as ve:
-            print(f"Error in division: {ve}")
-            return None
+            return f"Error in division: Please try another input."
         except Exception as e:
-            print(f"Unexpected error in division: {e}")
-            return None
+            return f"Unexpected error in division: {e}"
   
 
     def record_operation(self, operation_type, input_data, key, result):
